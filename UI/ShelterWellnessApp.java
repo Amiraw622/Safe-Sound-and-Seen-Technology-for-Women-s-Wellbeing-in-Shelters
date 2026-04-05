@@ -237,4 +237,32 @@ public class ShelterWellnessApp extends JFrame {
 
         g.drawImage(img, x, y, imgW, imgH, this);
     }
+
+    static void drawCard(Graphics2D g, int x, int y, int w, int h, boolean hov, Color ac) {
+        if (hov) {
+            g.setColor(alphaColor(ac, 10));
+            g.fillRoundRect(x - 3, y - 3, w + 6, h + 6, 22, 22);
+        }
+        g.setColor(hov ? alphaColor(ac, 15) : CARD_BG);
+        g.fillRoundRect(x, y, w, h, 18, 18);
+        g.setColor(alphaColor(ac, hov ? 80 : 25));
+        g.setStroke(new BasicStroke(1));
+        g.drawRoundRect(x, y, w, h, 18, 18);
+    }
+
+    static void cardIcon(Graphics2D g, int x, int y, String ic, Color ac, boolean hov) {
+        g.setFont(new Font("SansSerif", Font.PLAIN, 28));
+        g.setColor(ac);
+        g.drawString(ic, x + 22, y + 48);
+    }
+
+    static void cardText(Graphics2D g, int x, int y, String t, String h, Color ac, boolean hov) {
+        g.setFont(FONT_CARD_TITLE);
+        g.setColor(hov ? ac : TEXT_PRIMARY);
+        g.drawString(t, x + 64, y + 33);
+
+        g.setFont(FONT_SMALL);
+        g.setColor(new Color(160, 120, 130));
+        g.drawString(h, x + 64, y + 53);
+    }
 }
