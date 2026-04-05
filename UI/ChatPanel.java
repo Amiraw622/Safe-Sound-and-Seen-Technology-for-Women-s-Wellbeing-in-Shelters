@@ -113,10 +113,10 @@ public class ChatPanel extends JPanel{
 
         String[] options = {
                 "I'm doing okay \uD83D\uDE0A",
-                "Not great today \uD83D\uDE14",
-                "I feel lonely",
-                "I'm scared",
-                "I just want company"
+                "Things feel a bit hard today \uD83D\uDE14",
+                "I feel a little alone",
+                "I'm feeling uneasy",
+                "I just want some company"
         };
 
         showOptions(chatArea, bottomPanel, cs, options, choice -> {
