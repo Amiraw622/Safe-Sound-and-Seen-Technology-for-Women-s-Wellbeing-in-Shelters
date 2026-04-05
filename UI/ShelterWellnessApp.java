@@ -222,4 +222,19 @@ public class ShelterWellnessApp extends JFrame {
         g.setColor(TEXT_SECONDARY);
         g.drawString("\u2190 Back", x + 14, y + 20);
     }
+
+    void drawAnimal(Graphics2D g, int cx, int ty, float s, boolean happy) {
+        if (animals == null || animals.length == 0)
+            return;
+
+        Image img = animals[2];
+
+        int imgW = (int) (260 * s);
+        int imgH = (int) (200 * s);
+
+        int x = cx - imgW / 2;
+        int y = ty - 40;
+
+        g.drawImage(img, x, y, imgW, imgH, this);
+    }
 }
