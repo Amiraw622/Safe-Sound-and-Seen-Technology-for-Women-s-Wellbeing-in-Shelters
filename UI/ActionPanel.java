@@ -54,6 +54,7 @@ public class ActionPanel extends JPanel {
             repaint();
         });
         animTimer.start();
+        
 
         MouseAdapter ma = new MouseAdapter() {
             @Override
@@ -96,6 +97,7 @@ public class ActionPanel extends JPanel {
         addMouseMotionListener(ma);
     }
 
+    
     private void advanceStep() {
         currentStep++;
         stepFade = 0f;

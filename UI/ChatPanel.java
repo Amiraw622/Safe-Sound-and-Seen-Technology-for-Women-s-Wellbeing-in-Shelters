@@ -62,8 +62,10 @@ public class ChatPanel extends JPanel{
         bk.setPreferredSize(new Dimension(150, 68));
         bk.addActionListener(e -> app.navigate(backTo));
         top.add(bk, BorderLayout.WEST);
+        top.add(app.createQuitButton(), BorderLayout.EAST);
 
         p.add(top, BorderLayout.NORTH);
+
 
         JPanel chatArea = new JPanel() {
             @Override
