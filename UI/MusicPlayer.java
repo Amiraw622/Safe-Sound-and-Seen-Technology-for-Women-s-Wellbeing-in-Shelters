@@ -16,40 +16,43 @@ public class MusicPlayer {
     }
 
     public void playCurrent() {
-        stopCurrentClipOnly();
-        paused = false;
+    System.out.println("=== playCurrent CALLED ===");
+    new Exception().printStackTrace();
 
-        try {
-            File file = new File(playlist[currentIndex]);
-            if (!file.exists()) {
-                System.out.println("File not found: " + file.getAbsolutePath());
-                return;
-            }
+    stopCurrentClipOnly();
+    paused = false;
 
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
-            clip = AudioSystem.getClip();
-            clip.open(audioStream);
-
-            manualStop = false;
-
-            clip.addLineListener(event -> {
-                if (event.getType() == LineEvent.Type.STOP) {
-                    if (!manualStop && !paused
-                            && clip != null
-                            && clip.getMicrosecondPosition() >= clip.getMicrosecondLength()) {
-                        nextSong();
-                    }
-                }
-            });
-
-            clip.setFramePosition(0);
-            clip.start();
-
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
-            System.out.println("Cannot play: " + playlist[currentIndex]);
+    try {
+        File file = new File(playlist[currentIndex]);
+        if (!file.exists()) {
+            System.out.println("File not found: " + file.getAbsolutePath());
+            return;
         }
+
+        AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+        clip = AudioSystem.getClip();
+        clip.open(audioStream);
+
+        manualStop = false;
+
+        clip.addLineListener(event -> {
+            if (event.getType() == LineEvent.Type.STOP) {
+                if (!manualStop && !paused
+                        && clip != null
+                        && clip.getMicrosecondPosition() >= clip.getMicrosecondLength()) {
+                    nextSong();
+                }
+            }
+        });
+
+        clip.setFramePosition(0);
+        clip.start();
+
+    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+        e.printStackTrace();
+        System.out.println("Cannot play: " + playlist[currentIndex]);
     }
+}
 
     private void stopCurrentClipOnly() {
         if (clip != null) {

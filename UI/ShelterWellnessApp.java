@@ -197,7 +197,7 @@ public class ShelterWellnessApp extends JFrame {
     public void openMusicDetail() {
         todayMusic = musicPlayer.getCurrentIndex();
         refreshMusicDetail();
-        if (!musicPlayer.isPlaying()) musicPlayer.playCurrent();
+        // if (!musicPlayer.isPlaying()) musicPlayer.playCurrent();
         navigate("musicdetail");
     }
 
