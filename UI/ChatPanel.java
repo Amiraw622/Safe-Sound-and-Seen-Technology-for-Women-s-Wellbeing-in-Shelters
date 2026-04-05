@@ -51,7 +51,7 @@ public class ChatPanel extends JPanel{
         top.setLayout(new BorderLayout());
         top.setPreferredSize(new Dimension(0, 128));
 
-        JButton bk = new JButton("<-");
+        JButton bk = new JButton("← Back");
         bk.setFont(new Font("SansSerif", Font.BOLD, 18));
         bk.setForeground(new Color(180, 120, 100));
         bk.setOpaque(false);
@@ -59,7 +59,7 @@ public class ChatPanel extends JPanel{
         bk.setContentAreaFilled(false);
         bk.setFocusPainted(false);
         bk.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        bk.setPreferredSize(new Dimension(50, 68));
+        bk.setPreferredSize(new Dimension(150, 68));
         bk.addActionListener(e -> app.navigate(backTo));
         top.add(bk, BorderLayout.WEST);
 
