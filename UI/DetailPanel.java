@@ -30,7 +30,6 @@ public class DetailPanel extends JPanel {
             final Rectangle yesBtn = new Rectangle();
             final Rectangle noBtn = new Rectangle();
             final Rectangle actBtn = new Rectangle();
-            // Music control buttons
             final Rectangle pauseBtn = new Rectangle();
             final Rectangle nextBtn = new Rectangle();
 
@@ -67,21 +66,16 @@ public class DetailPanel extends JPanel {
                                 app.nextRecipe();
                                 app.navigate("recipedetail");
                             } else if (isMusic) {
-                                MusicPlayer mp = app.getMusicPlayer();
-                                if (!musicStarted) {
-                                    mp.replay();
-                                    musicStarted = true;
-                                } else {
-                                    mp.replay();
-                                }
+                                app.getMusicPlayer().replay();
+                                musicStarted = true;
                                 repaint();
                             }
                         } else if (isMusic && musicStarted && pauseBtn.contains(e.getPoint())) {
                             MusicPlayer mp = app.getMusicPlayer();
-                            if (mp.isPlaying()) {
-                                mp.stop();
+                            if (mp.isPaused()) {
+                                mp.resume();
                             } else {
-                                mp.replay();
+                                mp.pause();
                             }
                             repaint();
                         } else if (isMusic && musicStarted && nextBtn.contains(e.getPoint())) {
@@ -103,7 +97,6 @@ public class DetailPanel extends JPanel {
                 addMouseListener(ma);
                 addMouseMotionListener(ma);
 
-                // Check if music is already playing when panel is created
                 if (isMusic && app.getMusicPlayer().isPlaying()) {
                     musicStarted = true;
                 }
@@ -151,19 +144,19 @@ public class DetailPanel extends JPanel {
                 g2.setColor(accent);
                 ShelterWellnessApp.ctr(g2, actionText, cx, abY + 29);
 
-                // ── Music control buttons (shown after play is clicked) ──
+                // ── Music control buttons ──
                 int controlY = abY + abH + 14;
                 if (isMusic && musicStarted) {
                     int btnW = 130, btnH = 40, gap = 16;
                     int totalW = btnW * 2 + gap;
                     int startX = cx - totalW / 2;
 
-                    // Pause / Resume button
-                    int pX = startX;
-                    pauseBtn.setBounds(pX, controlY, btnW, btnH);
-                    boolean isPaused = !app.getMusicPlayer().isPlaying();
+                    // Pause / Resume — use isPaused() not !isPlaying()
+                    boolean isPaused = app.getMusicPlayer().isPaused();
                     Color pauseColor = isPaused ? ShelterWellnessApp.ACCENT_CORAL : accent;
 
+                    int pX = startX;
+                    pauseBtn.setBounds(pX, controlY, btnW, btnH);
                     g2.setColor(hov == 4
                             ? ShelterWellnessApp.alphaColor(pauseColor, 35)
                             : ShelterWellnessApp.CARD_BG);
@@ -192,7 +185,6 @@ public class DetailPanel extends JPanel {
 
                     controlY += btnH + 14;
                 } else {
-                    // Clear music control hit areas when not shown
                     pauseBtn.setBounds(0, 0, 0, 0);
                     nextBtn.setBounds(0, 0, 0, 0);
                 }
@@ -214,7 +206,7 @@ public class DetailPanel extends JPanel {
                     tY += 22;
                 }
 
-                // ── "Want something different?" button ──
+                // ── "Want something different?" ──
                 String hint = "Want something different?";
                 int smallBtnW = 260;
                 int smallBtnH = 38;

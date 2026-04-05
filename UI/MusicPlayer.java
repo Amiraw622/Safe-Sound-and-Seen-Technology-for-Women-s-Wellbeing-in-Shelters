@@ -9,6 +9,7 @@ public class MusicPlayer {
     private int currentIndex = 0;
     private Clip clip;
     private boolean manualStop = false;
+    private boolean paused = false;
 
     public MusicPlayer(String[] playlist) {
         this.playlist = playlist;
@@ -16,26 +17,24 @@ public class MusicPlayer {
 
     public void playCurrent() {
         stopCurrentClipOnly();
+        paused = false;
 
         try {
             File file = new File(playlist[currentIndex]);
+            if (!file.exists()) {
+                System.out.println("File not found: " + file.getAbsolutePath());
+                return;
+            }
+
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
             clip = AudioSystem.getClip();
             clip.open(audioStream);
 
             manualStop = false;
-            System.out.println("Path: " + file.getAbsolutePath());
-            System.out.println("Exists: " + file.exists());
-            System.out.println("Format: " + audioStream.getFormat());
-            
-            clip = AudioSystem.getClip();
-            clip.open(audioStream);
-            clip.start();
-            System.out.println("Playing: " + clip.isRunning());
 
             clip.addLineListener(event -> {
                 if (event.getType() == LineEvent.Type.STOP) {
-                    if (!manualStop
+                    if (!manualStop && !paused
                             && clip != null
                             && clip.getMicrosecondPosition() >= clip.getMicrosecondLength()) {
                         nextSong();
@@ -61,8 +60,27 @@ public class MusicPlayer {
         }
     }
 
+    public void pause() {
+        if (clip != null && clip.isRunning()) {
+            manualStop = true;
+            paused = true;
+            clip.stop();
+            System.out.println("[MusicPlayer] paused = true");
+        }
+    }
+
+    public void resume() {
+        if (clip != null && paused) {
+            manualStop = false;
+            paused = false;
+            clip.start();
+            System.out.println("[MusicPlayer] resumed, paused = false");
+        }
+    }
+
     public void stop() {
         stopCurrentClipOnly();
+        paused = false;
     }
 
     public void nextSong() {
@@ -81,6 +99,10 @@ public class MusicPlayer {
 
     public boolean isPlaying() {
         return clip != null && clip.isRunning();
+    }
+
+    public boolean isPaused() {
+        return paused;
     }
 
     public String getCurrentSongName() {
