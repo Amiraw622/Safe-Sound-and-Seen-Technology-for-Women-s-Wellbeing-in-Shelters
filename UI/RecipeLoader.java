@@ -5,7 +5,6 @@ import java.util.*;
 
 public class RecipeLoader {
 
-    // Each entry: [name, subtitle, body, searchText (lowercase name+desc for matching)]
     private final List<String[]> allRecipes = new ArrayList<>();
     private final Random rand = new Random();
 
