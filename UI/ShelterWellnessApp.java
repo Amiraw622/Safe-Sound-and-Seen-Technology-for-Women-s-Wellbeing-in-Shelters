@@ -106,12 +106,12 @@ public class ShelterWellnessApp extends JFrame {
         };
 
         String[] songs = {
-                "Songs/chill_background-bathroom-chill-background-music-14977.wav",
-                "Songs/folk_acoustic-morning-garden-acoustic-chill-15013.wav",
-                "Songs/jon_nathan_21-sakura-117030.wav",
-                "Songs/music_for_video-easy-lifestyle-137766.wav",
-                "Songs/soundgallerybydmitrytaras-spring-background-500175.wav",
-                "Songs/valeriigomeniuk-spring-in-bloom-495309.wav"
+                "public/Songs/chill_background-bathroom-chill-background-music-14977.wav",
+                "public/Songs/folk_acoustic-morning-garden-acoustic-chill-15013.wav",
+                "public/Songs/jon_nathan_21-sakura-117030.wav",
+                "public/Songs/music_for_video-easy-lifestyle-137766.wav",
+                "public/Songs/soundgallerybydmitrytaras-spring-background-500175.wav",
+                "public/Songs/valeriigomeniuk-spring-in-bloom-495309.wav"
         };
 
         musicPlayer = new MusicPlayer(songs);

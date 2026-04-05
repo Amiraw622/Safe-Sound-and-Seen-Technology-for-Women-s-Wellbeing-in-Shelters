@@ -24,6 +24,14 @@ public class MusicPlayer {
             clip.open(audioStream);
 
             manualStop = false;
+            System.out.println("Path: " + file.getAbsolutePath());
+            System.out.println("Exists: " + file.exists());
+            System.out.println("Format: " + audioStream.getFormat());
+            
+            clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+            System.out.println("Playing: " + clip.isRunning());
 
             clip.addLineListener(event -> {
                 if (event.getType() == LineEvent.Type.STOP) {
