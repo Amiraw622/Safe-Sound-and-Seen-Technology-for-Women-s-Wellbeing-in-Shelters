@@ -52,4 +52,87 @@ public class ShelterWellnessApp extends JFrame {
             setMinimumSize(new Dimension(820, 650));
             setLocationRelativeTo(null);
     }
+
+    static class GradientPanel extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setPaint(new GradientPaint(0, 0, BG_PRIMARY, 0, getHeight(), new Color(226, 132, 112)));
+            g2.fillRect(0, 0, getWidth(), getHeight());
+        }
+    }
+
+    // ─── Beautiful warm chat bubbles ───
+    void addWarmBubble(JPanel area, String text, boolean fromUser, Color accent) {
+        JPanel row = new JPanel();
+        row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
+        row.setOpaque(false);
+        row.setAlignmentX(Component.LEFT_ALIGNMENT);
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
+
+        if (fromUser) {
+            row.add(Box.createHorizontalGlue());
+        }
+
+        JPanel bubble = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                int w = getWidth(), h = getHeight();
+                int arc = 20;
+
+                if (fromUser) {
+                    // User bubble: warm coral/pink gradient
+                    g2.setPaint(new GradientPaint(0, 0, new Color(220, 140, 120), w, h, new Color(200, 120, 105)));
+                    g2.fillRoundRect(0, 0, w, h, arc, arc);
+                } else {
+                    // Friend bubble: soft cream with warm border
+                    g2.setColor(new Color(255, 255, 255));
+                    g2.fillRoundRect(0, 0, w, h, arc, arc);
+                    g2.setColor(new Color(230, 200, 185, 120));
+                    g2.setStroke(new BasicStroke(1f));
+                    g2.drawRoundRect(0, 0, w - 1, h - 1, arc, arc);
+                }
+                g2.dispose();
+            }
+
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension d = super.getPreferredSize();
+                return new Dimension(Math.min(d.width, 280), d.height);
+            }
+
+            @Override
+            public Dimension getMaximumSize() {
+                return getPreferredSize();
+            }
+        };
+        bubble.setLayout(new BorderLayout());
+        bubble.setOpaque(false);
+
+        JLabel label = new JLabel("<html><div style='padding:10px 14px;width:220px;font-size:12px;color:"
+                + (fromUser ? "#FFFFFF" : "#6B4A3C")
+                + ";'>" + text + "</div></html>");
+        label.setOpaque(false);
+        bubble.add(label);
+
+        row.add(bubble);
+
+        if (!fromUser) {
+            row.add(Box.createHorizontalGlue());
+        }
+
+        area.add(row);
+        area.add(Box.createVerticalStrut(10));
+    }
+
+    void navigate(String s) {
+        cardLayout.show(cardPanel, s);
+    }
+
+    public Image[] getAnimals() {
+        return animals;
+    }
 }
