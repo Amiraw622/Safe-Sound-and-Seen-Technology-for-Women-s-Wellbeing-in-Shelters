@@ -9,7 +9,12 @@ public class HelpResourcesPanel extends JPanel {
     private final ShelterWellnessApp app;
 
     public HelpResourcesPanel(ShelterWellnessApp app) {
-        ...
+        this.app = app;
+        setLayout(new BorderLayout());
+        setBackground(new Color(255, 252, 248));
+
+        add(buildTopBar(), BorderLayout.NORTH);
+        add(buildScrollableContent(), BorderLayout.CENTER);
     }
 
     // ─── Warm top bar ───
