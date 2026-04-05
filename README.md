@@ -6,7 +6,7 @@ Instead of overwhelming users with complex tools, it provides **simple, immediat
 
 ## User Safety
 1. Have **direct help & support** on the main panel.
-2. Can quickly quit every part in case someone find that they are searching for help.
+2. Can quickly quit in chat in case someone find that they are searching for help.
 3. Don't need to connect to Internet.
 4. Provide a message to tell users we **won't save** their personal data.
 
