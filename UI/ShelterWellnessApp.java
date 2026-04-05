@@ -96,7 +96,7 @@ public class ShelterWellnessApp extends JFrame {
         cardPanel.add(new HomePanel(this), "home");
         cardPanel.add(new DetailPanel(this,
                 DAILY_MUSIC[todayMusic][0], DAILY_MUSIC[todayMusic][1], DAILY_MUSIC[todayMusic][2],
-                "\u266B", ACCENT_WARM, "TODAY'S MUSIC", "\u25B6  Play now"), "musicdetail");
+                "\u266B", ACCENT_WARM, "TODAY'S MUSIC", "\u25B6  Playing now"), "musicdetail");
         cardPanel.add(new DetailPanel(this,
                 currentRecipe[0], currentRecipe[1], currentRecipe[2],
                 "\u2615", ACCENT_ROSE, "TODAY'S RECIPE", "\u2665  Show me another one"), "recipedetail");
@@ -256,7 +256,7 @@ public class ShelterWellnessApp extends JFrame {
         cardPanel.remove(1);
         cardPanel.add(new DetailPanel(this,
                 DAILY_MUSIC[todayMusic][0], DAILY_MUSIC[todayMusic][1], DAILY_MUSIC[todayMusic][2],
-                "\u266B", ACCENT_WARM, "TODAY'S MUSIC", "\u25B6  Play now"), "musicdetail", 1);
+                "\u266B", ACCENT_WARM, "TODAY'S MUSIC", "\u25B6  Playing now"), "musicdetail", 1);
         cardPanel.revalidate();
         cardPanel.repaint();
     }

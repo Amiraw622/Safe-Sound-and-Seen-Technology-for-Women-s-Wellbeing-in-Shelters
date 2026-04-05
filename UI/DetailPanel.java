@@ -121,11 +121,17 @@ public class DetailPanel extends JPanel {
                         Point pt = e.getPoint();
 
                         if (backBtn.contains(pt)) {
+                            if (isMusic) {
+                            app.getMusicPlayer().pause();
+                            }
                             app.navigate("home");
                             return;
                         }
 
                         if (noBtn.contains(pt)) {
+                            if (isMusic) {
+                                app.getMusicPlayer().pause();
+                            }
                             app.navigate("supportChoice");
                             return;
                         }
