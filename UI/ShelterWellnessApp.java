@@ -53,13 +53,25 @@ public class ShelterWellnessApp extends JFrame {
                     "Ingredients:\n  - 2 slices bread\n  - Butter\n  - Cinnamon + sugar\n\nToast bread, spread butter.\nSprinkle cinnamon sugar.\nEnjoy the warm aroma." },
     };
 
-
     public ShelterWellnessApp() {
             super("A small space for you");
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             setSize(900, 720);
             setMinimumSize(new Dimension(820, 650));
             setLocationRelativeTo(null);
+
+            animals = new Image[] {
+                new ImageIcon("public/images/animal/drink.png").getImage(),
+                new ImageIcon("public/images/animal/eat.PNG").getImage(),
+                new ImageIcon("public/images/animal/first.PNG").getImage(),
+                new ImageIcon("public/images/animal/move.PNG").getImage(),
+                new ImageIcon("public/images/animal/music.PNG").getImage(),
+                new ImageIcon("public/images/animal/rest.PNG").getImage(),
+                new ImageIcon("public/images/animal/shy.PNG").getImage(),
+                new ImageIcon("public/images/animal/stretch.png").getImage(),
+                new ImageIcon("public/images/animal/talk.PNG").getImage(),
+                new ImageIcon("public/images/animal/think.PNG").getImage()
+        };
     }
 
     static class GradientPanel extends JPanel {
