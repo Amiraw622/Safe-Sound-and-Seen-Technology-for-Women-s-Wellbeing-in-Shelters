@@ -2,6 +2,7 @@ package UI;
 
 import java.awt.*;
 import java.awt.event.*;
+import static UI.ShelterWellnessApp.*;
 
 import static UI.ShelterWellnessApp.*;
 
@@ -13,6 +14,7 @@ public class SupportChoicePanel extends ShelterWellnessApp.GradientPanel {
     private final Rectangle comfortBtn = new Rectangle();
     private final Rectangle distractBtn = new Rectangle();
     private final Rectangle talkBtn = new Rectangle();
+    private final Rectangle backBtn = new Rectangle();
 
     private int hov = -1;
 
@@ -24,14 +26,17 @@ public class SupportChoicePanel extends ShelterWellnessApp.GradientPanel {
             public void mouseMoved(MouseEvent e) {
                 hov = calmBtn.contains(e.getPoint()) ? 0
                         : comfortBtn.contains(e.getPoint()) ? 1
-                        : distractBtn.contains(e.getPoint()) ? 2
-                        : talkBtn.contains(e.getPoint()) ? 3 : -1;
+                                : distractBtn.contains(e.getPoint()) ? 2
+                                        : talkBtn.contains(e.getPoint()) ? 3 : -1;
                 repaint();
             }
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (calmBtn.contains(e.getPoint()))
+                if (backBtn.contains(e.getPoint())) {
+                    app.navigate("home");
+                }
+                else if (calmBtn.contains(e.getPoint()))
                     app.navigate("stretch");
                 else if (comfortBtn.contains(e.getPoint()))
                     app.navigate("breath");
@@ -56,6 +61,7 @@ public class SupportChoicePanel extends ShelterWellnessApp.GradientPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = setup(g);
+        drawBack(g2, 20, 20, backBtn);
 
         int w = getWidth();
         int cx = w / 2;
@@ -81,10 +87,10 @@ public class SupportChoicePanel extends ShelterWellnessApp.GradientPanel {
 
         Image[] animals = app.getAnimals();
         Image[] chosen = {
-                animals[7],  // stretch
-                animals[9],  // think
-                animals[0],  // drink
-                animals[3]   // move
+                animals[7], // stretch
+                animals[9], // think
+                animals[0], // drink
+                animals[3] // move
         };
 
         for (int i = 0; i < 4; i++) {
@@ -126,10 +132,14 @@ public class SupportChoicePanel extends ShelterWellnessApp.GradientPanel {
             ctr(g2, texts[i], curX + bubbleW / 2, y + 39);
 
             int targetH;
-            if (i == 0) targetH = 120;
-            else if (i == 2) targetH = 115;
-            else if (i == 3) targetH = 125;
-            else targetH = 100;
+            if (i == 0)
+                targetH = 120;
+            else if (i == 2)
+                targetH = 115;
+            else if (i == 3)
+                targetH = 125;
+            else
+                targetH = 100;
 
             int imgW = img.getWidth(this);
             int imgH = img.getHeight(this);
@@ -138,9 +148,12 @@ public class SupportChoicePanel extends ShelterWellnessApp.GradientPanel {
             int animalY = y + btnH / 2 - targetH / 2;
 
             int gap;
-            if (i == 0) gap = 0;
-            else if (i == 3) gap = 0;
-            else gap = 18;
+            if (i == 0)
+                gap = 0;
+            else if (i == 3)
+                gap = 0;
+            else
+                gap = 18;
 
             if (left) {
                 int animalX = curX - gap - targetW;
