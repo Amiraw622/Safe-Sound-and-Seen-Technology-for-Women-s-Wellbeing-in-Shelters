@@ -67,7 +67,7 @@ public class SupportChoicePanel extends ShelterWellnessApp.GradientPanel {
         int cx = w / 2;
 
         g2.setFont(FONT_TITLE);
-        ctr(g2, "What would feel most helpful right now?", cx, 120);
+        ctr(g2, "What do you feel like doing right now?", cx, 120);
 
         int btnH = 64;
         int startY = 165;
