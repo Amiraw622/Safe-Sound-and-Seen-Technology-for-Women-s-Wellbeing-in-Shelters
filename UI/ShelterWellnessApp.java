@@ -170,6 +170,20 @@ public class ShelterWellnessApp extends JFrame {
         navigate("recipedetail");
     }
 
+    public JButton createQuitButton() {
+        JButton quit = new JButton("Quit");
+        quit.setFont(new Font("SansSerif", Font.BOLD, 14));
+        quit.setForeground(new Color(180, 120, 100));
+        quit.setOpaque(false);
+        quit.setBorderPainted(false);
+        quit.setContentAreaFilled(false);
+        quit.setFocusPainted(false);
+        quit.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        quit.setPreferredSize(new Dimension(80, 50));
+        quit.addActionListener(e -> System.exit(0));
+        return quit;
+    }
+
     public void nextRecipe() {
         if (matchedRecipes != null && !matchedRecipes.isEmpty()) {
             matchedIndex = (matchedIndex + 1) % matchedRecipes.size();
