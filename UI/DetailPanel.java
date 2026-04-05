@@ -61,8 +61,7 @@ public class DetailPanel extends JPanel {
                                 app.nextRecipe();
                                 app.navigate("recipedetail");
                             } else if (label.equals("TODAY'S MUSIC")) {
-                                app.nextMusic();
-                                app.navigate("musicdetail");
+                                app.getMusicPlayer().replay();
                             }
                         }
                     }

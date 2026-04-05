@@ -7,7 +7,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
-
 public class HomePanel extends JPanel {
     private ShelterWellnessApp app;
 
@@ -15,13 +14,14 @@ public class HomePanel extends JPanel {
         this.app = app;
         setLayout(new BorderLayout());
         add(createHomeScreen(), BorderLayout.CENTER);
+
     }
 
     private JPanel createHomeScreen() {
         return new GradientPanel() {
             int hov = -1;
             final Rectangle[] cards = { new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle() };
-            final Rectangle helpLink = new Rectangle(); // separate from cards!
+            final Rectangle helpLink = new Rectangle();
             {
                 addMouseMotionListener(new MouseMotionAdapter() {
                     public void mouseMoved(MouseEvent e) {
@@ -44,8 +44,8 @@ public class HomePanel extends JPanel {
                     public void mouseClicked(MouseEvent e) {
                         if (cards[0].contains(e.getPoint()))
                             app.navigate("freechat");
-                        else if (cards[1].contains(e.getPoint()))
-                            app.navigate("musicdetail");
+                        else if (cards[1].contains(e.getPoint())) 
+                            app.openMusicDetail();
                         else if (cards[2].contains(e.getPoint()))
                             app.navigate("recipedetail");
                         else if (cards[3].contains(e.getPoint()))
@@ -65,7 +65,7 @@ public class HomePanel extends JPanel {
 
             @Override
             protected void paintComponent(Graphics g) {
-                 super.paintComponent(g);
+                super.paintComponent(g);
                 Graphics2D g2 = ShelterWellnessApp.setup(g);
                 int w = getWidth(), cx = w / 2;
                 app.drawAnimal(g2, cx, 50, 0.95f, true);
@@ -94,13 +94,15 @@ public class HomePanel extends JPanel {
                 ShelterWellnessApp.drawCard(g2, cX, y, cW, cH, hov == 2, ShelterWellnessApp.ACCENT_ROSE);
                 cards[2].setBounds(cX, y, cW, cH);
                 ShelterWellnessApp.cardIcon(g2, cX, y, "\u2615", ShelterWellnessApp.ACCENT_ROSE, hov == 2);
-                ShelterWellnessApp.cardText(g2, cX, y, "Cook", "Find something to cook?", ShelterWellnessApp.ACCENT_ROSE, hov == 2);
+                ShelterWellnessApp.cardText(g2, cX, y, "Cook", "Find something to cook?",
+                        ShelterWellnessApp.ACCENT_ROSE, hov == 2);
 
                 y += cH + gap;
                 ShelterWellnessApp.drawCard(g2, cX, y, cW, cH, hov == 3, ShelterWellnessApp.ACCENT_PURPLE);
                 cards[3].setBounds(cX, y, cW, cH);
                 ShelterWellnessApp.cardIcon(g2, cX, y, "\u2728", ShelterWellnessApp.ACCENT_PURPLE, hov == 3);
-                ShelterWellnessApp.cardText(g2, cX, y, "Do something", "Find what feels right", ShelterWellnessApp.ACCENT_PURPLE, hov == 3);
+                ShelterWellnessApp.cardText(g2, cX, y, "Do something", "Find what feels right",
+                        ShelterWellnessApp.ACCENT_PURPLE, hov == 3);
 
                 // Help & Support link — uses helpLink, NOT cards[3]
                 int linkY = getHeight() - 50;

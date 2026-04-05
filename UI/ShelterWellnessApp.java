@@ -5,12 +5,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
 
-
 public class ShelterWellnessApp extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel cardPanel;
     private Image[] animals;
+    private MusicPlayer musicPlayer;
 
     public static final Color BG_PRIMARY = new Color(255, 255, 255);
     public static final Color BG_SECONDARY = new Color(35, 30, 48);
@@ -38,17 +38,37 @@ public class ShelterWellnessApp extends JFrame {
     public static final Font FONT_DETAIL_TITLE = new Font("SansSerif", Font.BOLD, 22);
 
     static final String[][] DAILY_MUSIC = {
-            { "Morning Calm", "Relaxing music to help you find peace",
-                    "A peaceful piano piece with gentle dynamics.\nClose your eyes, breathe slowly,\nand let the melody carry you." },
-            { "Afternoon Breeze", "Relaxing music to help you find peace",
-                    "Acoustic fingerpicking layered with\nbirdsong and a gentle stream.\nPerfect for a mindful break." },
-            { "Sunset Glow", "Relaxing music to help you find peace",
-                    "Warm pads and soft chimes that\nfade like the last light of day.\nLet your shoulders drop and relax." },
-            { "Rainy Day Comfort", "Relaxing music to help you find peace",
-                    "The steady rhythm of raindrops\naccompanied by a cello melody.\nWrap yourself in something cozy." },
-            { "Garden Morning", "Relaxing music to help you find peace",
-                    "A wooden flute dances over\na carpet of birdsong and rustling leaves.\nImagine sunshine on your face." },
-    };
+    {
+        "bathroom chill background music",
+        "Soft background music for a calm moment",
+        "A gentle chill track for quiet rest."
+    },
+    {
+        "morning garden acoustic chill",
+        "Light acoustic music for a peaceful mood",
+        "A soft acoustic piece that feels fresh and gentle."
+    },
+    {
+        "sakura",
+        "A calm reflective track",
+        "A peaceful song with a soft and soothing atmosphere."
+    },
+    {
+        "easy lifestyle",
+        "Comfortable background music for daily relaxation",
+        "A light and easy track for resting your mind."
+    },
+    {
+        "spring background",
+        "Warm spring feeling with soft energy",
+        "A peaceful background song with a fresh mood."
+    },
+    {
+        "spring in bloom",
+        "Gentle spring-inspired music",
+        "A soft relaxing piece that feels bright and comforting."
+    }
+};
 
     static final String[][] DAILY_RECIPES = {
             { "Honey Lemon Tea", "Warm, soothing, and easy to make",
@@ -85,6 +105,17 @@ public class ShelterWellnessApp extends JFrame {
                 new ImageIcon("public/images/animal/think.PNG").getImage()
         };
 
+        String[] songs = {
+                "Songs/chill_background-bathroom-chill-background-music-14977.wav",
+                "Songs/folk_acoustic-morning-garden-acoustic-chill-15013.wav",
+                "Songs/jon_nathan_21-sakura-117030.wav",
+                "Songs/music_for_video-easy-lifestyle-137766.wav",
+                "Songs/soundgallerybydmitrytaras-spring-background-500175.wav",
+                "Songs/valeriigomeniuk-spring-in-bloom-495309.wav"
+        };
+
+        musicPlayer = new MusicPlayer(songs);
+
         Random rand = new Random();
         todayMusic = rand.nextInt(DAILY_MUSIC.length);
         todayRecipe = rand.nextInt(DAILY_RECIPES.length);
@@ -95,15 +126,14 @@ public class ShelterWellnessApp extends JFrame {
 
         cardPanel.add(new HomePanel(this), "home");
         cardPanel.add(new DetailPanel(
-            this,
-            DAILY_MUSIC[todayMusic][0],
-            DAILY_MUSIC[todayMusic][1],
-            DAILY_MUSIC[todayMusic][2],
-            "\u266B",
-            ACCENT_WARM,
-            "TODAY'S MUSIC",
-            "\u25B6  Play now"
-        ), "musicdetail");
+                this,
+                DAILY_MUSIC[todayMusic][0],
+                DAILY_MUSIC[todayMusic][1],
+                DAILY_MUSIC[todayMusic][2],
+                "\u266B",
+                ACCENT_WARM,
+                "TODAY'S MUSIC",
+                "\u25B6  Play now"), "musicdetail");
 
         cardPanel.add(new DetailPanel(
                 this,
@@ -113,8 +143,7 @@ public class ShelterWellnessApp extends JFrame {
                 "\u2615",
                 ACCENT_ROSE,
                 "TODAY'S RECIPE",
-                "\u2665  Show me another one"
-        ), "recipedetail");
+                "\u2665  Show me another one"), "recipedetail");
 
         // ── Extracted panels ──
         cardPanel.add(new SupportChoicePanel(this), "supportChoice");
@@ -131,7 +160,6 @@ public class ShelterWellnessApp extends JFrame {
         cardLayout.show(cardPanel, "home");
     }
 
-    
     private JPanel createActionScreen(String title, String subtitle, String body, Color accent, String backTo) {
         return new GradientPanel() {
             int hov = -1;
@@ -223,6 +251,17 @@ public class ShelterWellnessApp extends JFrame {
                 g2.dispose();
             }
         };
+    }
+
+    public void openMusicDetail() {
+        todayMusic = musicPlayer.getCurrentIndex();
+        refreshMusicDetail();
+
+        if (!musicPlayer.isPlaying()) {
+            musicPlayer.playCurrent();
+        }
+
+        navigate("musicdetail");
     }
 
     private JPanel createStretchScreen() {
@@ -353,7 +392,7 @@ public class ShelterWellnessApp extends JFrame {
 
     void refreshMusicDetail() {
         cardPanel.remove(1);
-        cardPanel.add(new DetailPanel(this, 
+        cardPanel.add(new DetailPanel(this,
                 DAILY_MUSIC[todayMusic][0],
                 DAILY_MUSIC[todayMusic][1],
                 DAILY_MUSIC[todayMusic][2],
@@ -497,6 +536,10 @@ public class ShelterWellnessApp extends JFrame {
 
     public Image[] getAnimals() {
         return animals;
+    }
+
+    public MusicPlayer getMusicPlayer() {
+        return musicPlayer;
     }
 
     public static void main(String[] args) {
