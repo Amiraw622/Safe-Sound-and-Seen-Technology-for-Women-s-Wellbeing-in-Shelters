@@ -176,11 +176,11 @@ public class ChatPanel extends JPanel{
     private void showSupportPath(JPanel chatArea, JPanel bottomPanel, JScrollPane cs) {
         delayBubble(chatArea, cs, "I'm here for you. You're not alone in this. What would help most right now?", () -> {
             String[] options = {
-                    "I need someone to talk to \uD83D\uDCAC",
+                    "I need someone to talk to",
                     "Show me calming music \uD83C\uDFB5",
                     "I want to cook something \uD83C\uDF75",
                     "Show me help resources \u260E",
-                    "Just stay with me quietly \uD83E\uDD0D"
+                    "Just stay with me quietly"
             };
             showOptions(chatArea, bottomPanel, cs, options, choice -> {
                 app.addWarmBubble(chatArea, choice, true, ShelterWellnessApp.ACCENT_TEAL);
@@ -314,7 +314,7 @@ public class ChatPanel extends JPanel{
     // ─── Continue or go home ───
     private void showContinueOrHome(JPanel chatArea, JPanel bottomPanel, JScrollPane cs, boolean happy) {
         String[] options = happy
-                ? new String[] { "Tell me more! \u2728", "I need support actually", "\u2190 Go home" }
+                ? new String[] { "Tell me more!", "I need support actually", "\u2190 Go home" }
                 : new String[] { "I feel a bit better now", "I still need help", "\u2190 Go home" };
 
         showOptions(chatArea, bottomPanel, cs, options, choice -> {

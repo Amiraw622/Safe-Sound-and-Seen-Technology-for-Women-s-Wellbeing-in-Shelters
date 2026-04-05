@@ -41,7 +41,16 @@ public class ShelterWellnessApp extends JFrame {
     };
 
     static final String[][] DAILY_RECIPES = {
-            // ...;
+        { "Honey Lemon Tea", "Warm, soothing, and easy to make",
+                    "Ingredients:\n  - 1 cup hot water\n  - 1 tbsp honey\n  - Juice of half a lemon\n\nStir honey into hot water.\nAdd lemon juice. Sip slowly." },
+        { "Banana Oat Pancakes", "Simple, healthy, and comforting",
+                    "Ingredients:\n  - 1 ripe banana\n  - 1/2 cup oats\n  - 1 egg\n  - Pinch of cinnamon\n\nMash banana, mix all together.\nCook small pancakes on low heat." },
+        { "Veggie Soup", "Nourishing and warming for the soul",
+                    "Ingredients:\n  - 2 carrots, 1 potato, 1 onion\n  - 4 cups broth\n  - Salt, pepper, herbs\n\nChop veggies, simmer in broth\n20 min until tender." },
+        { "Fruit & Yogurt Bowl", "Fresh, light, and energizing",
+                    "Ingredients:\n  - 1 cup yogurt\n  - Handful of berries\n  - 1 tbsp granola\n  - Drizzle of honey\n\nLayer yogurt, fruit, granola.\nDrizzle honey on top." },
+        { "Cinnamon Toast", "Quick comfort with a warm aroma",
+                    "Ingredients:\n  - 2 slices bread\n  - Butter\n  - Cinnamon + sugar\n\nToast bread, spread butter.\nSprinkle cinnamon sugar.\nEnjoy the warm aroma." },
     };
 
 
@@ -134,5 +143,83 @@ public class ShelterWellnessApp extends JFrame {
 
     public Image[] getAnimals() {
         return animals;
+    }
+
+    private int todayMusic, todayRecipe;
+
+    public void nextRecipe() {
+        todayRecipe = (todayRecipe + 1) % DAILY_RECIPES.length;
+        // refreshRecipeDetail();
+    }
+
+    public void nextMusic() {
+        todayMusic = (todayMusic + 1) % DAILY_MUSIC.length;
+        // refreshMusicDetail();
+    }
+
+    static Color alphaColor(Color c, int a) {
+        return new Color(c.getRed(), c.getGreen(), c.getBlue(), a);
+    }
+
+    static void ctr(Graphics2D g, String t, int cx, int y) {
+        FontMetrics f = g.getFontMetrics();
+        g.drawString(t, cx - f.stringWidth(t) / 2, y);
+    }
+
+    void refreshRecipeDetail() {
+        cardPanel.remove(2);
+        cardPanel.add(new DetailPanel(this,
+                DAILY_RECIPES[todayRecipe][0],
+                DAILY_RECIPES[todayRecipe][1],
+                DAILY_RECIPES[todayRecipe][2],
+                "\u2615",
+                ACCENT_ROSE,
+                "TODAY'S RECIPE",
+                "\u2665  Show me another one"), "recipedetail", 2);
+        cardPanel.revalidate();
+        cardPanel.repaint();
+    }
+
+    void refreshMusicDetail() {
+        cardPanel.remove(1);
+        cardPanel.add(new DetailPanel(this, 
+                DAILY_MUSIC[todayMusic][0],
+                DAILY_MUSIC[todayMusic][1],
+                DAILY_MUSIC[todayMusic][2],
+                "\u266B",
+                ACCENT_WARM,
+                "TODAY'S MUSIC",
+                "\u25B6  Play now"), "musicdetail", 1);
+        cardPanel.revalidate();
+        cardPanel.repaint();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            } catch (Exception ignored) {
+            }
+            new ShelterWellnessApp().setVisible(true);
+        });
+    }
+
+    static Graphics2D setup(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+        return g2;
+    }
+
+    static void drawBack(Graphics2D g, int x, int y, Rectangle b) {
+        int bw = 80, bh = 30;
+        b.setBounds(x, y, bw, bh);
+        g.setColor(new Color(255, 255, 255, 12));
+        g.fillRoundRect(x, y, bw, bh, 10, 10);
+        g.setColor(CARD_BORDER);
+        g.drawRoundRect(x, y, bw, bh, 10, 10);
+        g.setFont(new Font("SansSerif", Font.BOLD, 12));
+        g.setColor(TEXT_SECONDARY);
+        g.drawString("\u2190 Back", x + 14, y + 20);
     }
 }
