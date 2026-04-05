@@ -71,7 +71,110 @@ public class ShelterWellnessApp extends JFrame {
                 new ImageIcon("public/images/animal/stretch.png").getImage(),
                 new ImageIcon("public/images/animal/talk.PNG").getImage(),
                 new ImageIcon("public/images/animal/think.PNG").getImage()
+        };Random rand = new Random();
+        todayMusic = rand.nextInt(DAILY_MUSIC.length);
+        todayRecipe = rand.nextInt(DAILY_RECIPES.length);
+
+        cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
+        cardPanel.setBackground(BG_PRIMARY);
+
+        cardPanel.add(new HomePanel(this), "home");
+        cardPanel.add(new DetailPanel(
+            this,
+            DAILY_MUSIC[todayMusic][0],
+            DAILY_MUSIC[todayMusic][1],
+            DAILY_MUSIC[todayMusic][2],
+            "\u266B",
+            ACCENT_WARM,
+            "TODAY'S MUSIC",
+            "\u25B6  Play now"
+        ), "musicdetail");
+
+        cardPanel.add(new DetailPanel(
+                this,
+                DAILY_RECIPES[todayRecipe][0],
+                DAILY_RECIPES[todayRecipe][1],
+                DAILY_RECIPES[todayRecipe][2],
+                "\u2615",
+                ACCENT_ROSE,
+                "TODAY'S RECIPE",
+                "\u2665  Show me another one"
+        ), "recipedetail");
+
+        // ── Extracted panels ──
+        cardPanel.add(new SupportChoicePanel(this), "supportChoice");
+        cardPanel.add(new HelpResourcesPanel(this), "help");
+
+        cardPanel.add(new ChatPanel(this, "Talk", ACCENT_CORAL, true, "home"), "talk");
+        cardPanel.add(new ChatPanel(this, "Chat", ACCENT_TEAL, false, "home"), "freechat");
+        cardPanel.add(createStretchScreen(), "stretch");
+        cardPanel.add(createBreathScreen(), "breath");
+        cardPanel.add(createWaterScreen(), "water");
+        cardPanel.add(createMoveScreen(), "move");
+
+        add(cardPanel);
+        cardLayout.show(cardPanel, "home");
+    }
+
+    private JPanel createActionScreen(String title, String subtitle, String body, Color accent, String backTo) {
+        return new GradientPanel() {
+            int hov = -1;
+            final Rectangle backBtn = new Rectangle();
+            final Rectangle doneBtn = new Rectangle();
+
+            {
+                MouseAdapter ma = new MouseAdapter() {
+                    @Override
+                    public void mouseMoved(MouseEvent e) {
+                        hov = backBtn.contains(e.getPoint()) ? 0
+                                : doneBtn.contains(e.getPoint()) ? 1
+                                        : -1;
+                        setCursor(hov >= 0
+                                ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
+                                : Cursor.getDefaultCursor());
+                        repaint();
+                    }
+
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (backBtn.contains(e.getPoint()))
+                            navigate(backTo);
+                        else if (doneBtn.contains(e.getPoint()))
+                            navigate("home");
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        hov = -1;
+                        repaint();
+                    }
+                };
+                addMouseListener(ma);
+                addMouseMotionListener(ma);
+            }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                //...
+            }
         };
+    }
+
+    private JPanel createStretchScreen() {
+        //...
+    }
+
+    private JPanel createBreathScreen() {
+        //...
+    }
+
+    private JPanel createWaterScreen() {
+        //...
+    }
+
+    private JPanel createMoveScreen() {
+        //...
     }
 
     static class GradientPanel extends JPanel {
