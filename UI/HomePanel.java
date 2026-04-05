@@ -14,7 +14,6 @@ public class HomePanel extends JPanel {
         this.app = app;
         setLayout(new BorderLayout());
         add(createHomeScreen(), BorderLayout.CENTER);
-
     }
 
     private JPanel createHomeScreen() {
@@ -44,10 +43,10 @@ public class HomePanel extends JPanel {
                     public void mouseClicked(MouseEvent e) {
                         if (cards[0].contains(e.getPoint()))
                             app.navigate("freechat");
-                        else if (cards[1].contains(e.getPoint())) 
+                        else if (cards[1].contains(e.getPoint()))
                             app.openMusicDetail();
                         else if (cards[2].contains(e.getPoint()))
-                            app.navigate("recipedetail");
+                            app.openCookFlow();           // Go to ingredient selection
                         else if (cards[3].contains(e.getPoint()))
                             app.navigate("supportChoice");
                         else if (helpLink.contains(e.getPoint()))
@@ -104,7 +103,6 @@ public class HomePanel extends JPanel {
                 ShelterWellnessApp.cardText(g2, cX, y, "Do something", "Find what feels right",
                         ShelterWellnessApp.ACCENT_PURPLE, hov == 3);
 
-                // Help & Support link — uses helpLink, NOT cards[3]
                 int linkY = getHeight() - 50;
                 String helpText = "Help & Support";
                 g2.setFont(ShelterWellnessApp.FONT_BODY);

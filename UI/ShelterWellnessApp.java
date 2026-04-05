@@ -3,7 +3,8 @@ package UI;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Random;
+import java.util.*;
+import java.util.List;
 
 public class ShelterWellnessApp extends JFrame {
 
@@ -11,6 +12,10 @@ public class ShelterWellnessApp extends JFrame {
     private JPanel cardPanel;
     private Image[] animals;
     private MusicPlayer musicPlayer;
+    private RecipeLoader recipeLoader;
+    private String[] currentRecipe; // [name, subtitle, body]
+    private List<String[]> matchedRecipes;  // filtered results
+    private int matchedIndex = 0;
 
     public static final Color BG_PRIMARY = new Color(255, 255, 255);
     public static final Color BG_SECONDARY = new Color(35, 30, 48);
@@ -38,52 +43,27 @@ public class ShelterWellnessApp extends JFrame {
     public static final Font FONT_DETAIL_TITLE = new Font("SansSerif", Font.BOLD, 22);
 
     static final String[][] DAILY_MUSIC = {
-    {
-        "bathroom chill background music",
-        "Soft background music for a calm moment",
-        "A gentle chill track for quiet rest."
-    },
-    {
-        "morning garden acoustic chill",
-        "Light acoustic music for a peaceful mood",
-        "A soft acoustic piece that feels fresh and gentle."
-    },
-    {
-        "sakura",
-        "A calm reflective track",
-        "A peaceful song with a soft and soothing atmosphere."
-    },
-    {
-        "easy lifestyle",
-        "Comfortable background music for daily relaxation",
-        "A light and easy track for resting your mind."
-    },
-    {
-        "spring background",
-        "Warm spring feeling with soft energy",
-        "A peaceful background song with a fresh mood."
-    },
-    {
-        "spring in bloom",
-        "Gentle spring-inspired music",
-        "A soft relaxing piece that feels bright and comforting."
-    }
-};
-
-    static final String[][] DAILY_RECIPES = {
-            { "Honey Lemon Tea", "Warm, soothing, and easy to make",
-                    "Ingredients:\n  - 1 cup hot water\n  - 1 tbsp honey\n  - Juice of half a lemon\n\nStir honey into hot water.\nAdd lemon juice. Sip slowly." },
-            { "Banana Oat Pancakes", "Simple, healthy, and comforting",
-                    "Ingredients:\n  - 1 ripe banana\n  - 1/2 cup oats\n  - 1 egg\n  - Pinch of cinnamon\n\nMash banana, mix all together.\nCook small pancakes on low heat." },
-            { "Veggie Soup", "Nourishing and warming for the soul",
-                    "Ingredients:\n  - 2 carrots, 1 potato, 1 onion\n  - 4 cups broth\n  - Salt, pepper, herbs\n\nChop veggies, simmer in broth\n20 min until tender." },
-            { "Fruit & Yogurt Bowl", "Fresh, light, and energizing",
-                    "Ingredients:\n  - 1 cup yogurt\n  - Handful of berries\n  - 1 tbsp granola\n  - Drizzle of honey\n\nLayer yogurt, fruit, granola.\nDrizzle honey on top." },
-            { "Cinnamon Toast", "Quick comfort with a warm aroma",
-                    "Ingredients:\n  - 2 slices bread\n  - Butter\n  - Cinnamon + sugar\n\nToast bread, spread butter.\nSprinkle cinnamon sugar.\nEnjoy the warm aroma." },
+        { "bathroom chill background music",
+          "Soft background music for a calm moment",
+          "A gentle chill track for quiet rest." },
+        { "morning garden acoustic chill",
+          "Light acoustic music for a peaceful mood",
+          "A soft acoustic piece that feels fresh and gentle." },
+        { "sakura",
+          "A calm reflective track",
+          "A peaceful song with a soft and soothing atmosphere." },
+        { "easy lifestyle",
+          "Comfortable background music for daily relaxation",
+          "A light and easy track for resting your mind." },
+        { "spring background",
+          "Warm spring feeling with soft energy",
+          "A peaceful background song with a fresh mood." },
+        { "spring in bloom",
+          "Gentle spring-inspired music",
+          "A soft relaxing piece that feels bright and comforting." }
     };
 
-    private int todayMusic, todayRecipe;
+    private int todayMusic;
 
     public ShelterWellnessApp() {
         super("A small space for you");
@@ -116,39 +96,37 @@ public class ShelterWellnessApp extends JFrame {
 
         musicPlayer = new MusicPlayer(songs);
 
+        // Load recipe dataset
+        recipeLoader = new RecipeLoader("public/data/all_recipies.csv");
+        currentRecipe = recipeLoader.getRandom();
+
         Random rand = new Random();
         todayMusic = rand.nextInt(DAILY_MUSIC.length);
-        todayRecipe = rand.nextInt(DAILY_RECIPES.length);
 
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
         cardPanel.setBackground(BG_PRIMARY);
 
-        cardPanel.add(new HomePanel(this), "home");
-        cardPanel.add(new DetailPanel(
+        cardPanel.add(new HomePanel(this), "home");                          // 0
+        cardPanel.add(new DetailPanel(                                       // 1 - music
                 this,
                 DAILY_MUSIC[todayMusic][0],
                 DAILY_MUSIC[todayMusic][1],
                 DAILY_MUSIC[todayMusic][2],
-                "\u266B",
-                ACCENT_WARM,
-                "TODAY'S MUSIC",
+                "\u266B", ACCENT_WARM, "TODAY'S MUSIC",
                 "\u25B6  Play now"), "musicdetail");
 
-        cardPanel.add(new DetailPanel(
+        cardPanel.add(new DetailPanel(                                       // 2 - recipe
                 this,
-                DAILY_RECIPES[todayRecipe][0],
-                DAILY_RECIPES[todayRecipe][1],
-                DAILY_RECIPES[todayRecipe][2],
-                "\u2615",
-                ACCENT_ROSE,
-                "TODAY'S RECIPE",
+                currentRecipe[0],
+                currentRecipe[1],
+                currentRecipe[2],
+                "\u2615", ACCENT_ROSE, "TODAY'S RECIPE",
                 "\u2665  Show me another one"), "recipedetail");
 
-        // ── Extracted panels ──
+        cardPanel.add(new IngredientPanel(this), "ingredients");             // 3 - NEW
         cardPanel.add(new SupportChoicePanel(this), "supportChoice");
         cardPanel.add(new HelpResourcesPanel(this), "help");
-
         cardPanel.add(new ChatPanel(this, "Talk", ACCENT_CORAL, true, "home"), "talk");
         cardPanel.add(new ChatPanel(this, "Chat", ACCENT_TEAL, false, "home"), "freechat");
         cardPanel.add(createStretchScreen(), "stretch");
@@ -159,6 +137,51 @@ public class ShelterWellnessApp extends JFrame {
         add(cardPanel);
         cardLayout.show(cardPanel, "home");
     }
+
+    // ── Called from HomePanel when "Cook" card is clicked ──
+    public void openCookFlow() {
+        navigate("ingredients");
+    }
+
+    // ── Called from IngredientPanel with selected ingredients ──
+    public void findRecipesByIngredients(List<String> ingredients) {
+        matchedRecipes = recipeLoader.findByIngredients(ingredients);
+        matchedIndex = 0;
+
+        if (matchedRecipes.isEmpty()) {
+            // No match — fall back to random
+            currentRecipe = recipeLoader.getRandom();
+        } else {
+            currentRecipe = matchedRecipes.get(0);
+        }
+
+        refreshRecipeDetail();
+        navigate("recipedetail");
+    }
+
+    // ── Called from IngredientPanel "Just surprise me" ──
+    public void showRandomRecipe() {
+        matchedRecipes = null;
+        matchedIndex = 0;
+        currentRecipe = recipeLoader.getRandom();
+        refreshRecipeDetail();
+        navigate("recipedetail");
+    }
+
+    // ── Called when "Show me another one" is clicked ──
+    public void nextRecipe() {
+        if (matchedRecipes != null && !matchedRecipes.isEmpty()) {
+            matchedIndex = (matchedIndex + 1) % matchedRecipes.size();
+            currentRecipe = matchedRecipes.get(matchedIndex);
+        } else {
+            currentRecipe = recipeLoader.getRandom();
+        }
+        refreshRecipeDetail();
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // Everything below is unchanged from your existing code
+    // ═══════════════════════════════════════════════════════════
 
     private JPanel createActionScreen(String title, String subtitle, String body, Color accent, String backTo) {
         return new GradientPanel() {
@@ -171,27 +194,19 @@ public class ShelterWellnessApp extends JFrame {
                     @Override
                     public void mouseMoved(MouseEvent e) {
                         hov = backBtn.contains(e.getPoint()) ? 0
-                                : doneBtn.contains(e.getPoint()) ? 1
-                                        : -1;
-                        setCursor(hov >= 0
-                                ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
-                                : Cursor.getDefaultCursor());
+                                : doneBtn.contains(e.getPoint()) ? 1 : -1;
+                        setCursor(hov >= 0 ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) : Cursor.getDefaultCursor());
                         repaint();
                     }
 
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        if (backBtn.contains(e.getPoint()))
-                            navigate(backTo);
-                        else if (doneBtn.contains(e.getPoint()))
-                            navigate("home");
+                        if (backBtn.contains(e.getPoint())) navigate(backTo);
+                        else if (doneBtn.contains(e.getPoint())) navigate("home");
                     }
 
                     @Override
-                    public void mouseExited(MouseEvent e) {
-                        hov = -1;
-                        repaint();
-                    }
+                    public void mouseExited(MouseEvent e) { hov = -1; repaint(); }
                 };
                 addMouseListener(ma);
                 addMouseMotionListener(ma);
@@ -201,20 +216,14 @@ public class ShelterWellnessApp extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2 = setup(g);
-
-                int w = getWidth();
-                int cx = w / 2;
-                int boxW = 430;
-                int boxH = 190;
-                int boxX = cx - boxW / 2;
-                int boxY = 220;
+                int w = getWidth(), cx = w / 2;
+                int boxW = 430, boxH = 190, boxX = cx - boxW / 2, boxY = 220;
 
                 drawBack(g2, 20, 20, backBtn);
 
                 g2.setFont(FONT_DETAIL_TITLE);
                 g2.setColor(TEXT_PRIMARY);
                 ctr(g2, title, cx, 140);
-
                 g2.setFont(FONT_SUBTITLE);
                 g2.setColor(TEXT_MUTED);
                 ctr(g2, subtitle, cx, 170);
@@ -227,27 +236,21 @@ public class ShelterWellnessApp extends JFrame {
 
                 g2.setFont(FONT_BODY);
                 g2.setColor(TEXT_SECONDARY);
-
                 int textY = boxY + 36;
                 for (String line : body.split("\n")) {
                     g2.drawString(line, boxX + 24, textY);
                     textY += 28;
                 }
 
-                int btnW = 180, btnH = 42;
-                int btnX = cx - btnW / 2;
-                int btnY = boxY + boxH + 24;
-
+                int btnW = 180, btnH = 42, btnX = cx - btnW / 2, btnY = boxY + boxH + 24;
                 doneBtn.setBounds(btnX, btnY, btnW, btnH);
                 g2.setColor(hov == 1 ? alphaColor(accent, 28) : CARD_BG);
                 g2.fillRoundRect(btnX, btnY, btnW, btnH, 18, 18);
                 g2.setColor(alphaColor(accent, 80));
                 g2.drawRoundRect(btnX, btnY, btnW, btnH, 18, 18);
-
                 g2.setFont(FONT_BUTTON);
                 g2.setColor(accent);
                 ctr(g2, "Done", cx, btnY + 27);
-
                 g2.dispose();
             }
         };
@@ -256,83 +259,48 @@ public class ShelterWellnessApp extends JFrame {
     public void openMusicDetail() {
         todayMusic = musicPlayer.getCurrentIndex();
         refreshMusicDetail();
-
-        if (!musicPlayer.isPlaying()) {
-            musicPlayer.playCurrent();
-        }
-
+        if (!musicPlayer.isPlaying()) musicPlayer.playCurrent();
         navigate("musicdetail");
     }
 
     private JPanel createStretchScreen() {
-        return createActionScreen(
-                "Stretch with me",
-                "Just one quiet minute",
-                "1. Roll your shoulders slowly.\n"
-                        + "2. Reach your arms up gently.\n"
-                        + "3. Turn your neck left and right.\n"
-                        + "4. Let your body loosen a little.",
-                ACCENT_PURPLE,
-                "supportChoice");
+        return createActionScreen("Stretch with me", "Just one quiet minute",
+                "1. Roll your shoulders slowly.\n2. Reach your arms up gently.\n3. Turn your neck left and right.\n4. Let your body loosen a little.",
+                ACCENT_PURPLE, "supportChoice");
     }
 
     private JPanel createBreathScreen() {
-        return createActionScreen(
-                "Take a slow breath",
-                "We can go gently",
-                "1. Breathe in for 4.\n"
-                        + "2. Hold for 2.\n"
-                        + "3. Breathe out for 6.\n"
-                        + "4. Repeat a few times.",
-                ACCENT_TEAL,
-                "supportChoice");
+        return createActionScreen("Take a slow breath", "We can go gently",
+                "1. Breathe in for 4.\n2. Hold for 2.\n3. Breathe out for 6.\n4. Repeat a few times.",
+                ACCENT_TEAL, "supportChoice");
     }
 
     private JPanel createWaterScreen() {
-        return createActionScreen(
-                "A sip of water",
-                "A tiny reset is enough",
-                "1. Take one small sip.\n"
-                        + "2. Sit for a moment.\n"
-                        + "3. Notice your breathing.\n"
-                        + "4. You do not need to rush.",
-                ACCENT_WARM,
-                "supportChoice");
+        return createActionScreen("A sip of water", "A tiny reset is enough",
+                "1. Take one small sip.\n2. Sit for a moment.\n3. Notice your breathing.\n4. You do not need to rush.",
+                ACCENT_WARM, "supportChoice");
     }
 
     private JPanel createMoveScreen() {
-        return createActionScreen(
-                "Change your spot",
-                "A small change can help",
-                "1. Stand up slowly.\n"
-                        + "2. Take a few steps.\n"
-                        + "3. Sit somewhere that feels better.\n"
-                        + "4. Let your body settle there.",
-                ACCENT_ROSE,
-                "supportChoice");
+        return createActionScreen("Change your spot", "A small change can help",
+                "1. Stand up slowly.\n2. Take a few steps.\n3. Sit somewhere that feels better.\n4. Let your body settle there.",
+                ACCENT_ROSE, "supportChoice");
     }
 
-    // ─── Beautiful warm chat bubbles ───
     void addWarmBubble(JPanel area, String text, boolean fromUser, Color accent) {
         JPanel row = new JPanel();
         row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
         row.setOpaque(false);
         row.setAlignmentX(Component.LEFT_ALIGNMENT);
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
-
-        if (fromUser) {
-            row.add(Box.createHorizontalGlue());
-        }
+        if (fromUser) row.add(Box.createHorizontalGlue());
 
         JPanel bubble = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                int w = getWidth(), h = getHeight();
-                int arc = 20;
-
+                int w = getWidth(), h = getHeight(), arc = 20;
                 if (fromUser) {
                     g2.setPaint(new GradientPaint(0, 0, new Color(220, 140, 120), w, h, new Color(200, 120, 105)));
                     g2.fillRoundRect(0, 0, w, h, arc, arc);
@@ -353,24 +321,17 @@ public class ShelterWellnessApp extends JFrame {
             }
 
             @Override
-            public Dimension getMaximumSize() {
-                return getPreferredSize();
-            }
+            public Dimension getMaximumSize() { return getPreferredSize(); }
         };
         bubble.setLayout(new BorderLayout());
         bubble.setOpaque(false);
 
         JLabel label = new JLabel("<html><div style='padding:10px 14px;width:220px;font-size:12px;color:"
-                + (fromUser ? "#FFFFFF" : "#6B4A3C")
-                + ";'>" + text + "</div></html>");
+                + (fromUser ? "#FFFFFF" : "#6B4A3C") + ";'>" + text + "</div></html>");
         label.setOpaque(false);
         bubble.add(label);
-
         row.add(bubble);
-
-        if (!fromUser) {
-            row.add(Box.createHorizontalGlue());
-        }
+        if (!fromUser) row.add(Box.createHorizontalGlue());
 
         area.add(row);
         area.add(Box.createVerticalStrut(10));
@@ -379,12 +340,8 @@ public class ShelterWellnessApp extends JFrame {
     void refreshRecipeDetail() {
         cardPanel.remove(2);
         cardPanel.add(new DetailPanel(this,
-                DAILY_RECIPES[todayRecipe][0],
-                DAILY_RECIPES[todayRecipe][1],
-                DAILY_RECIPES[todayRecipe][2],
-                "\u2615",
-                ACCENT_ROSE,
-                "TODAY'S RECIPE",
+                currentRecipe[0], currentRecipe[1], currentRecipe[2],
+                "\u2615", ACCENT_ROSE, "TODAY'S RECIPE",
                 "\u2665  Show me another one"), "recipedetail", 2);
         cardPanel.revalidate();
         cardPanel.repaint();
@@ -393,12 +350,8 @@ public class ShelterWellnessApp extends JFrame {
     void refreshMusicDetail() {
         cardPanel.remove(1);
         cardPanel.add(new DetailPanel(this,
-                DAILY_MUSIC[todayMusic][0],
-                DAILY_MUSIC[todayMusic][1],
-                DAILY_MUSIC[todayMusic][2],
-                "\u266B",
-                ACCENT_WARM,
-                "TODAY'S MUSIC",
+                DAILY_MUSIC[todayMusic][0], DAILY_MUSIC[todayMusic][1], DAILY_MUSIC[todayMusic][2],
+                "\u266B", ACCENT_WARM, "TODAY'S MUSIC",
                 "\u25B6  Play now"), "musicdetail", 1);
         cardPanel.revalidate();
         cardPanel.repaint();
@@ -406,43 +359,38 @@ public class ShelterWellnessApp extends JFrame {
 
     String reply(String m, boolean s) {
         String l = m.toLowerCase();
-
         if (l.contains("sad") || l.contains("cry") || l.contains("hurt"))
-            return "I hear you. It's okay to feel this way. I'm right here with you.";
+            return "I hear you. It\u2019s okay to feel this way. I\u2019m right here with you.";
         if (l.contains("scared") || l.contains("afraid"))
-            return "It's okay to feel scared. You are safe here.";
+            return "It\u2019s okay to feel scared. You are safe here.";
         if (l.contains("angry") || l.contains("mad"))
             return "Your anger is valid \u2014 you deserve better.";
         if (l.contains("alone") || l.contains("lonely"))
-            return "You are not alone. I'm here, and people care about you.";
+            return "You are not alone. I\u2019m here, and people care about you.";
         if (l.contains("tired") || l.contains("exhausted"))
             return "Rest is so important. Be gentle with yourself.";
         if (l.contains("help") || l.contains("support"))
-            return "I'm here for you. Would you like me to show you some support resources?";
+            return "I\u2019m here for you. Would you like me to show you some support resources?";
         if (l.contains("thank"))
-            return "You don't need to thank me. You deserve kindness.";
-
+            return "You don\u2019t need to thank me. You deserve kindness.";
         if (l.contains("hello") || l.contains("hi") || l.contains("hey"))
-            return "Hello! I'm glad you're here. How are you feeling today?";
+            return "Hello! I\u2019m glad you\u2019re here. How are you feeling today?";
         if (l.contains("good") || l.contains("happy") || l.contains("great"))
-            return "That's wonderful to hear! What made your day bright?";
+            return "That\u2019s wonderful to hear! What made your day bright?";
 
         if (s) {
-            String[] r = { "I'm listening. Take your time.", "You are stronger than you realize.",
-                    "It's okay to not be okay. I'm here.", "Be gentle with yourself.", "You matter." };
+            String[] r = { "I\u2019m listening. Take your time.", "You are stronger than you realize.",
+                    "It\u2019s okay to not be okay. I\u2019m here.", "Be gentle with yourself.", "You matter." };
             return r[(int) (Math.random() * r.length)];
         } else {
-            String[] r = { "Tell me more, I'm listening.", "I'm here for you, whatever you need.",
-                    "What else is on your mind?", "I'm glad you're sharing with me.",
+            String[] r = { "Tell me more, I\u2019m listening.", "I\u2019m here for you, whatever you need.",
+                    "What else is on your mind?", "I\u2019m glad you\u2019re sharing with me.",
                     "Take your time. No rush." };
             return r[(int) (Math.random() * r.length)];
         }
     }
 
-    // ═══════ UTILITIES ═══════
-    void navigate(String s) {
-        cardLayout.show(cardPanel, s);
-    }
+    void navigate(String s) { cardLayout.show(cardPanel, s); }
 
     static Graphics2D setup(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
@@ -482,7 +430,6 @@ public class ShelterWellnessApp extends JFrame {
         g.setFont(FONT_CARD_TITLE);
         g.setColor(hov ? ac : TEXT_PRIMARY);
         g.drawString(t, x + 64, y + 33);
-
         g.setFont(FONT_SMALL);
         g.setColor(new Color(160, 120, 130));
         g.drawString(h, x + 64, y + 53);
@@ -501,18 +448,10 @@ public class ShelterWellnessApp extends JFrame {
     }
 
     void drawAnimal(Graphics2D g, int cx, int ty, float s, boolean happy) {
-        if (animals == null || animals.length == 0)
-            return;
-
+        if (animals == null || animals.length == 0) return;
         Image img = animals[2];
-
-        int imgW = (int) (260 * s);
-        int imgH = (int) (200 * s);
-
-        int x = cx - imgW / 2;
-        int y = ty - 40;
-
-        g.drawImage(img, x, y, imgW, imgH, this);
+        int imgW = (int) (260 * s), imgH = (int) (200 * s);
+        g.drawImage(img, cx - imgW / 2, ty - 40, imgW, imgH, this);
     }
 
     static class GradientPanel extends JPanel {
@@ -524,30 +463,18 @@ public class ShelterWellnessApp extends JFrame {
         }
     }
 
-    public void nextRecipe() {
-        todayRecipe = (todayRecipe + 1) % DAILY_RECIPES.length;
-        refreshRecipeDetail();
-    }
-
     public void nextMusic() {
         todayMusic = (todayMusic + 1) % DAILY_MUSIC.length;
         refreshMusicDetail();
     }
 
-    public Image[] getAnimals() {
-        return animals;
-    }
-
-    public MusicPlayer getMusicPlayer() {
-        return musicPlayer;
-    }
+    public Image[] getAnimals() { return animals; }
+    public MusicPlayer getMusicPlayer() { return musicPlayer; }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-            } catch (Exception ignored) {
-            }
+            try { UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName()); }
+            catch (Exception ignored) {}
             new ShelterWellnessApp().setVisible(true);
         });
     }
