@@ -17,15 +17,13 @@ public class HelpResourcesPanel extends JPanel {
         add(buildScrollableContent(), BorderLayout.CENTER);
     }
 
-    // ─── Warm top bar ───
     private JPanel buildTopBar() {
         JPanel top = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setPaint(
-                        new GradientPaint(0, 0, new Color(255, 245, 240), 0, getHeight(), new Color(255, 235, 228)));
+                g2.setPaint(new GradientPaint(0, 0, new Color(255, 245, 240), 0, getHeight(), new Color(255, 235, 228)));
                 g2.fillRect(0, 0, getWidth(), getHeight());
                 g2.setColor(new Color(230, 190, 175, 80));
                 g2.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
@@ -34,31 +32,24 @@ public class HelpResourcesPanel extends JPanel {
         top.setLayout(new BorderLayout());
         top.setPreferredSize(new Dimension(0, 60));
 
-        JButton bk = new JButton("\u2190");
-        bk.setFont(new Font("SansSerif", Font.BOLD, 18));
+        JButton bk = new JButton("<-");
+        bk.setFont(new Font("SansSerif", Font.BOLD, 14));
         bk.setForeground(new Color(180, 120, 100));
         bk.setOpaque(false);
         bk.setBorderPainted(false);
         bk.setContentAreaFilled(false);
         bk.setFocusPainted(false);
         bk.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        bk.setPreferredSize(new Dimension(50, 60));
+        bk.setPreferredSize(new Dimension(80, 60));
         bk.addActionListener(e -> app.navigate("home"));
         bk.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                bk.setForeground(new Color(140, 76, 45));
-            }
-
-            public void mouseExited(MouseEvent e) {
-                bk.setForeground(new Color(180, 120, 100));
-            }
+            public void mouseEntered(MouseEvent e) { bk.setForeground(new Color(140, 76, 45)); }
+            public void mouseExited(MouseEvent e)  { bk.setForeground(new Color(180, 120, 100)); }
         });
         top.add(bk, BorderLayout.WEST);
 
         JPanel titlePanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                /* transparent */ }
+            @Override protected void paintComponent(Graphics g) { /* transparent */ }
         };
         titlePanel.setOpaque(false);
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 16));
@@ -71,46 +62,42 @@ public class HelpResourcesPanel extends JPanel {
         return top;
     }
 
-    // ─── Scrollable content area ───
     private JScrollPane buildScrollableContent() {
         JPanel content = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
-                g2.setPaint(
-                        new GradientPaint(0, 0, new Color(255, 252, 248), 0, getHeight(), new Color(255, 243, 235)));
+                g2.setPaint(new GradientPaint(0, 0, new Color(255, 252, 248), 0, getHeight(), new Color(255, 243, 235)));
                 g2.fillRect(0, 0, getWidth(), getHeight());
             }
         };
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
         content.setBorder(BorderFactory.createEmptyBorder(16, 24, 24, 24));
 
-        // Privacy notice
         content.add(createWarmCard(
-                "\uD83D\uDD12  Your safety matters",
+                "Your safety matters",
                 "If you are in immediate danger, call emergency services.",
                 new Color(180, 140, 120),
                 new Color(255, 248, 242),
                 new Color(240, 220, 210)));
         content.add(Box.createVerticalStrut(20));
 
-        // Section: Emergency numbers
         content.add(createSectionTitle("Emergency numbers by region"));
 
         String[][] emergencyNumbers = {
-                { "\uD83C\uDDE8\uD83C\uDDF3", "China", "110", "Police" },
-                { "\uD83C\uDDFA\uD83C\uDDF8", "United States", "911", "All emergencies" },
-                { "\uD83C\uDDE8\uD83C\uDDE6", "Canada", "911", "All emergencies" },
-                { "\uD83C\uDDE6\uD83C\uDDFA", "Australia", "000 / 112", "Emergency / mobile" },
-                { "\uD83C\uDDF3\uD83C\uDDFF", "New Zealand", "111", "All emergencies" },
-                { "\uD83C\uDDEE\uD83C\uDDF3", "India", "112 / 14490", "Emergency / women helpline" },
-                { "\uD83C\uDDEC\uD83C\uDDE7", "United Kingdom", "999 / 112", "All emergencies" },
-                { "\uD83C\uDDEA\uD83C\uDDFA", "Europe", "112", "Universal emergency" },
-                { "\uD83C\uDDF8\uD83C\uDDEC", "Singapore", "999", "Police" },
-                { "\uD83C\uDDEF\uD83C\uDDF5", "Japan", "110", "Police" },
-                { "\uD83C\uDDF0\uD83C\uDDF7", "Korea", "112", "Police / emergency" },
-                { "\uD83C\uDDF9\uD83C\uDDED", "Thailand", "191", "Police" },
-                { "\uD83C\uDDF2\uD83C\uDDFE", "Malaysia", "999", "All emergencies" },
+                { "", "China",          "110",        "Police" },
+                { "", "United States",  "911",        "All emergencies" },
+                { "", "Canada",         "911",        "All emergencies" },
+                { "", "Australia",      "000 / 112",  "Emergency / mobile" },
+                { "", "New Zealand",    "111",        "All emergencies" },
+                { "", "India",          "112 / 14490","Emergency / women helpline" },
+                { "", "United Kingdom", "999 / 112",  "All emergencies" },
+                { "", "Europe",         "112",        "Universal emergency" },
+                { "", "Singapore",      "999",        "Police" },
+                { "", "Japan",          "110",        "Police" },
+                { "", "Korea",          "112",        "Police / emergency" },
+                { "", "Thailand",       "191",        "Police" },
+                { "", "Malaysia",       "999",        "All emergencies" },
         };
 
         for (String[] entry : emergencyNumbers) {
@@ -119,23 +106,15 @@ public class HelpResourcesPanel extends JPanel {
         }
 
         content.add(Box.createVerticalStrut(16));
-
-        // Section: Support organizations
         content.add(createSectionTitle("Support organizations"));
 
         String[][] orgs = {
-                { "Assaulted Women's Helpline", "https://www.awhl.org/",
-                        "24/7 crisis counselling and emotional support" },
-                { "Crisis Centre BC", "https://www.crisiscentre.bc.ca/",
-                        "Barrier-free, non-judgemental support" },
-                { "RAINN (US)", "800.656.HOPE",
-                        "National Sexual Assault Hotline" },
-                { "Rise", "https://www.womenslegalcentre.ca/",
-                        "Women's legal centre" },
-                { "ASHIYANAA (South Asia)", "1-888-417-2742",
-                        "Culturally-competent support services (violence)" },
-                { "WAVE (EUROPE)", "https://wave-network.org/list-of-helplines-in-46-countries/",
-                        "A table of the national women's helplines in the 46 European Countries" },
+                { "Assaulted Women's Helpline", "https://www.awhl.org/", "24/7 crisis counselling and emotional support" },
+                { "Crisis Centre BC", "https://www.crisiscentre.bc.ca/", "Barrier-free, non-judgemental support" },
+                { "RAINN (US)", "800.656.HOPE", "National Sexual Assault Hotline" },
+                { "Rise", "https://www.womenslegalcentre.ca/", "Women's legal centre" },
+                { "ASHIYANAA (South Asia)", "1-888-417-2742", "Culturally-competent support services (violence)" },
+                { "WAVE (EUROPE)", "https://wave-network.org/list-of-helplines-in-46-countries/", "National women's helplines in 46 European Countries" },
         };
 
         for (String[] org : orgs) {
@@ -145,7 +124,6 @@ public class HelpResourcesPanel extends JPanel {
 
         content.add(Box.createVerticalStrut(12));
 
-        // Footer
         JLabel footer = new JLabel("<html><div style='text-align:center;color:#B08878;font-size:11px;'>"
                 + "You are not alone. Reaching out is a sign of strength.</div></html>");
         footer.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -161,7 +139,6 @@ public class HelpResourcesPanel extends JPanel {
         return sc;
     }
 
-    // ─── Helper: section title ───
     private JLabel createSectionTitle(String text) {
         JLabel label = new JLabel(text);
         label.setFont(new Font("SansSerif", Font.BOLD, 16));
@@ -171,7 +148,6 @@ public class HelpResourcesPanel extends JPanel {
         return label;
     }
 
-    // ─── Helper: emergency number card ───
     private JPanel createEmergencyCard(String flag, String country, String number, String desc) {
         JPanel card = new JPanel() {
             @Override
@@ -214,7 +190,6 @@ public class HelpResourcesPanel extends JPanel {
         return card;
     }
 
-    // ─── Helper: support organization card ───
     private JPanel createOrgCard(String name, String contact, String desc) {
         JPanel card = new JPanel() {
             @Override
@@ -240,7 +215,7 @@ public class HelpResourcesPanel extends JPanel {
         nameLabel.setForeground(new Color(100, 60, 45));
         card.add(nameLabel);
 
-        JLabel contactLabel = new JLabel("\u260E  " + contact);
+        JLabel contactLabel = new JLabel("Tel: " + contact);
         contactLabel.setFont(new Font("SansSerif", Font.BOLD, 13));
         contactLabel.setForeground(new Color(180, 90, 70));
         contactLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -254,7 +229,6 @@ public class HelpResourcesPanel extends JPanel {
         return card;
     }
 
-    // ─── Helper: warm info card ───
     private JPanel createWarmCard(String title, String body, Color textColor, Color bgColor, Color borderColor) {
         JPanel card = new JPanel() {
             @Override

@@ -295,7 +295,7 @@ public class ShelterWellnessApp extends JFrame {
         g.setColor(new Color(255,255,255,12)); g.fillRoundRect(x, y, bw, bh, 10, 10);
         g.setColor(CARD_BORDER); g.drawRoundRect(x, y, bw, bh, 10, 10);
         g.setFont(new Font("SansSerif", Font.BOLD, 12)); g.setColor(TEXT_SECONDARY);
-        g.drawString("\u2190 Back", x+14, y+20);
+        g.drawString("<- Back", x+14, y+20);
     }
 
     void drawAnimal(Graphics2D g, int cx, int ty, float s, boolean happy) {

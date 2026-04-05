@@ -51,7 +51,7 @@ public class ChatPanel extends JPanel{
         top.setLayout(new BorderLayout());
         top.setPreferredSize(new Dimension(0, 128));
 
-        JButton bk = new JButton("\u2190");
+        JButton bk = new JButton("<-");
         bk.setFont(new Font("SansSerif", Font.BOLD, 18));
         bk.setForeground(new Color(180, 120, 100));
         bk.setOpaque(false);
