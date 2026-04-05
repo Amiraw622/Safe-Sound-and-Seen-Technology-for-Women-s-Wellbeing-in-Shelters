@@ -151,6 +151,7 @@ public class DetailPanel extends JPanel {
 
                         if (isMusic && musicStarted && nextBtn.width > 0 && nextBtn.contains(pt)) {
                             app.getMusicPlayer().nextSong();
+                            musicStarted = false;
                             app.nextMusic();
                             app.navigate("musicdetail");
                             return;

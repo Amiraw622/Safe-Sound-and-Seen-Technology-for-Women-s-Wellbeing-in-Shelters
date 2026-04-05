@@ -37,11 +37,11 @@ public class MusicPlayer {
 
         clip.addLineListener(event -> {
             if (event.getType() == LineEvent.Type.STOP) {
-                if (!manualStop && !paused
+                /*if (!manualStop && !paused
                         && clip != null
                         && clip.getMicrosecondPosition() >= clip.getMicrosecondLength()) {
                     nextSong();
-                }
+                }*/
             }
         });
 
@@ -87,8 +87,9 @@ public class MusicPlayer {
     }
 
     public void nextSong() {
+        stopCurrentClipOnly();
         currentIndex = (currentIndex + 1) % playlist.length;
-        playCurrent();
+        paused = false;
     }
 
     public void previousSong() {
