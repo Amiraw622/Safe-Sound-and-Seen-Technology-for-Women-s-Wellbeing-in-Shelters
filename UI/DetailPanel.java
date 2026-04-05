@@ -2,13 +2,11 @@ package UI;
 
 import javax.swing.JPanel;
 
-
 import UI.ShelterWellnessApp.GradientPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 
 public class DetailPanel extends JPanel {
     private ShelterWellnessApp app;
@@ -22,13 +20,19 @@ public class DetailPanel extends JPanel {
 
     private JPanel createDetailScreen(String title, String subtitle, String body,
             String icon, Color accent, String label, String actionText) {
+        boolean isMusic = label.equals("TODAY'S MUSIC");
+
         return new GradientPanel() {
             int hov = -1;
+            boolean musicStarted = false;
 
             final Rectangle backBtn = new Rectangle();
             final Rectangle yesBtn = new Rectangle();
             final Rectangle noBtn = new Rectangle();
             final Rectangle actBtn = new Rectangle();
+            // Music control buttons
+            final Rectangle pauseBtn = new Rectangle();
+            final Rectangle nextBtn = new Rectangle();
 
             {
                 MouseAdapter ma = new MouseAdapter() {
@@ -39,6 +43,8 @@ public class DetailPanel extends JPanel {
                                 : yesBtn.contains(e.getPoint()) ? 1
                                 : noBtn.contains(e.getPoint()) ? 2
                                 : actBtn.contains(e.getPoint()) ? 3
+                                : pauseBtn.contains(e.getPoint()) ? 4
+                                : nextBtn.contains(e.getPoint()) ? 5
                                 : -1;
 
                         setCursor(hov >= 0
@@ -60,9 +66,28 @@ public class DetailPanel extends JPanel {
                             if (label.equals("TODAY'S RECIPE")) {
                                 app.nextRecipe();
                                 app.navigate("recipedetail");
-                            } else if (label.equals("TODAY'S MUSIC")) {
-                                app.getMusicPlayer().replay();
+                            } else if (isMusic) {
+                                MusicPlayer mp = app.getMusicPlayer();
+                                if (!musicStarted) {
+                                    mp.replay();
+                                    musicStarted = true;
+                                } else {
+                                    mp.replay();
+                                }
+                                repaint();
                             }
+                        } else if (isMusic && musicStarted && pauseBtn.contains(e.getPoint())) {
+                            MusicPlayer mp = app.getMusicPlayer();
+                            if (mp.isPlaying()) {
+                                mp.stop();
+                            } else {
+                                mp.replay();
+                            }
+                            repaint();
+                        } else if (isMusic && musicStarted && nextBtn.contains(e.getPoint())) {
+                            app.getMusicPlayer().nextSong();
+                            app.nextMusic();
+                            app.navigate("musicdetail");
                         }
                     }
 
@@ -77,6 +102,11 @@ public class DetailPanel extends JPanel {
 
                 addMouseListener(ma);
                 addMouseMotionListener(ma);
+
+                // Check if music is already playing when panel is created
+                if (isMusic && app.getMusicPlayer().isPlaying()) {
+                    musicStarted = true;
+                }
             }
 
             @Override
@@ -107,6 +137,7 @@ public class DetailPanel extends JPanel {
                 g2.setColor(ShelterWellnessApp.TEXT_SECONDARY);
                 ShelterWellnessApp.ctr(g2, subtitle, cx, 184);
 
+                // ── Action button (Play now / Show me another one) ──
                 int abW = 280, abH = 44, abX = cx - abW / 2, abY = 215;
                 actBtn.setBounds(abX, abY, abW, abH);
                 g2.setColor(hov == 3
@@ -120,7 +151,55 @@ public class DetailPanel extends JPanel {
                 g2.setColor(accent);
                 ShelterWellnessApp.ctr(g2, actionText, cx, abY + 29);
 
-                int bY = 285, bH = 210;
+                // ── Music control buttons (shown after play is clicked) ──
+                int controlY = abY + abH + 14;
+                if (isMusic && musicStarted) {
+                    int btnW = 130, btnH = 40, gap = 16;
+                    int totalW = btnW * 2 + gap;
+                    int startX = cx - totalW / 2;
+
+                    // Pause / Resume button
+                    int pX = startX;
+                    pauseBtn.setBounds(pX, controlY, btnW, btnH);
+                    boolean isPaused = !app.getMusicPlayer().isPlaying();
+                    Color pauseColor = isPaused ? ShelterWellnessApp.ACCENT_CORAL : accent;
+
+                    g2.setColor(hov == 4
+                            ? ShelterWellnessApp.alphaColor(pauseColor, 35)
+                            : ShelterWellnessApp.CARD_BG);
+                    g2.fillRoundRect(pX, controlY, btnW, btnH, 18, 18);
+                    g2.setColor(ShelterWellnessApp.alphaColor(pauseColor, 70));
+                    g2.setStroke(new BasicStroke(1));
+                    g2.drawRoundRect(pX, controlY, btnW, btnH, 18, 18);
+                    g2.setFont(ShelterWellnessApp.FONT_BUTTON);
+                    g2.setColor(pauseColor);
+                    String pauseText = isPaused ? "\u25B6  Resume" : "\u275A\u275A  Pause";
+                    ShelterWellnessApp.ctr(g2, pauseText, pX + btnW / 2, controlY + 26);
+
+                    // Next button
+                    int nX = startX + btnW + gap;
+                    nextBtn.setBounds(nX, controlY, btnW, btnH);
+                    g2.setColor(hov == 5
+                            ? ShelterWellnessApp.alphaColor(accent, 35)
+                            : ShelterWellnessApp.CARD_BG);
+                    g2.fillRoundRect(nX, controlY, btnW, btnH, 18, 18);
+                    g2.setColor(ShelterWellnessApp.alphaColor(accent, 70));
+                    g2.setStroke(new BasicStroke(1));
+                    g2.drawRoundRect(nX, controlY, btnW, btnH, 18, 18);
+                    g2.setFont(ShelterWellnessApp.FONT_BUTTON);
+                    g2.setColor(accent);
+                    ShelterWellnessApp.ctr(g2, "Next \u25B6\u25B6", nX + btnW / 2, controlY + 26);
+
+                    controlY += btnH + 14;
+                } else {
+                    // Clear music control hit areas when not shown
+                    pauseBtn.setBounds(0, 0, 0, 0);
+                    nextBtn.setBounds(0, 0, 0, 0);
+                }
+
+                // ── Body text box ──
+                int bY = controlY + 6;
+                int bH = 210;
                 g2.setColor(ShelterWellnessApp.CARD_BG);
                 g2.fillRoundRect(cX, bY, cW, bH, 16, 16);
                 g2.setColor(ShelterWellnessApp.CARD_BORDER);
@@ -135,6 +214,7 @@ public class DetailPanel extends JPanel {
                     tY += 22;
                 }
 
+                // ── "Want something different?" button ──
                 String hint = "Want something different?";
                 int smallBtnW = 260;
                 int smallBtnH = 38;
